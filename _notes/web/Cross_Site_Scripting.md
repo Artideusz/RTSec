@@ -1,6 +1,6 @@
 ---
 title: XSS Basics
-layout: default
+layout: note
 permalink: /notes/web/xss
 name: XSS Basics
 grouped_by: web
@@ -91,6 +91,7 @@ There are a ton of XSS scanning tools that I will describe in the next update.
 
 ## Useful Resource Links
 
+- [My Node.js XSS challenge project](https://github.com/Artideusz/XSS-Challenges)
 - [Excess XSS - a good explanation of XSS](https://excess-xss.com/)
 - [OWASP - DOM-Based XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)
 - [OWASP - XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)

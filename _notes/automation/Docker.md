@@ -1,6 +1,6 @@
 ---
 title: Docker
-layout: default
+layout: note
 permalink: /notes/automation/docker/
 name: Docker basics
 grouped_by: automation

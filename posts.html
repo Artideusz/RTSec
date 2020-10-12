@@ -1,0 +1,22 @@
+---
+title: Posts
+layout: default
+permalink: /posts/
+---
+
+<div class="text-center container">
+    <div class="term"><div class="fix">$ cat ~/my_posts</div></div>
+    <br>
+    <ul class="list justifyContent">
+    {% for post in site.posts %}
+        <li class="item">
+            <a href="{{ post.url }}">
+                <h3>{{ post.title }}</h3>
+                <hr>
+                <img class="postImg" src="{{ post.imgpath }}">
+            </a>
+            <p>{{ post.excerpt }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+</div>

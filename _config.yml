@@ -2,7 +2,7 @@ title: RTSec - Protect our future
 description: >- # this means to ignore newlines until "baseurl:"
   This is a platform where I can store my notes publically and write various cybersecurity posts via blog.
 baseurl: ""
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "http://artideusz.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  Artideusz
 
 # Build settings
@@ -13,6 +13,8 @@ collections:
   notes:
     output: true
 
+markdown: kramdown
+highlighter: rouge
 
 # Exclude from processing.
 # The following items will not be processed, by default.

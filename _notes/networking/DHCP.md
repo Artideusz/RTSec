@@ -1,6 +1,6 @@
 ---
 title: Web - DHCP
-layout: default
+layout: note
 permalink: /notes/networking/dhcp/
 name: DHCP
 grouped_by: networking

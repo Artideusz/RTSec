@@ -97,6 +97,7 @@
         color: #0f0;
     }
     .secCont {
+        position: absolute;
         display: block;
         font-family: monospace;
         font-weight: bold;
@@ -105,7 +106,6 @@
         word-break: break-all;
         width: 70%;
         padding: 1em;
-        margin-bottom: 4em;
         border-radius: 1em;
         transition: margin-left 500ms ease-out;
     }
@@ -126,20 +126,21 @@
         margin-left: calc(70% / 2 - 2em);
     }
 
+    .cutRight, .cutLeft {
+        position: relative;
+        height: 10em;
+        padding-top: 8em;
+        margin-top: -8em;
+        padding-bottom: 18em;
+    }
+
     .cutLeft {
         clip-path: polygon(57% 9%, 47% 9%, 100% 0, 100% 100%, 0 100%, 0 20%);
         /* clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%); */
-        margin-top: -8em;
-        padding-top: 8em;
-        padding-bottom: 8em;
     }
     .cutRight {
-        margin-top: -1em;
         clip-path: polygon(57% 9%, 47% 9%, 100% 20%, 100% 100%, 0 100%, 0 0);
         /* clip-path: polygon(0 0, 100% 20%, 100% 100%, 0% 100%); */
-        margin-top: -8em;
-        padding-top: 8em;
-        padding-bottom: 8em;
     }
     .ico-github, .ico-yt {
         font-size: 2em;

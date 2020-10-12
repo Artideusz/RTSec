@@ -4,15 +4,16 @@
     "permalink": "/"
   },
   {
-    "name": "About",
-    "permalink": "/about/"
-  },
-  {
     "name": "Posts",
     "permalink": "/posts/"
   },
   {
     "name": "Notes",
     "permalink": "/notes/"
+  },
+  {
+    "name": "About",
+    "permalink": "/about-me/"
   }
+
 ]

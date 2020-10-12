@@ -1,6 +1,6 @@
 ---
 title: SQL Injection Basics
-layout: default
+layout: note
 permalink: /notes/web/sqli
 name: SQL Injection
 grouped_by: web

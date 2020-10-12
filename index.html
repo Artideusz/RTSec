@@ -37,11 +37,26 @@ layout: home
     <div class="pc">
         <div id="particles-js" class="main-container text-center">
             <h1 class="main-txt">RTSec</h1>
-            <img class="main-img" src="/assets/images/logo.png" alt="">
+            <img class="main-img" src="/assets/images/logo.png">
         </div>
-        <section class="sec">
-            <h2 class="text-center">Latest changes:</h2>
+        <section class="sec text-center">
+            <h2>Latest posts</h2>
             <hr class="sep">
+            <ul class="list">
+                {% for i in (0..4) %}
+                    {% if site.posts[i] %}
+                        {% assign post = site.posts[i] %}
+                        <li class="item">
+                            <a href="{{ post.url }}">
+                                <h3>{{ post.title }}</h3>
+                                <hr>
+                                <img class="postImg" src="{{ post.imgpath }}">
+                            </a>
+                            <p>{{ post.excerpt }}</p>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
         </section>
     </div>
 </main>

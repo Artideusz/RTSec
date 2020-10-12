@@ -1,6 +1,6 @@
 ---
 title: Local File Inclusion
-layout: default
+layout: note
 permalink: /notes/web/lfi
 name: Local and Remote File Inclusion
 grouped_by: web
