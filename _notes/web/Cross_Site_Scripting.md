@@ -7,31 +7,43 @@ grouped_by: web
 ---
 # Cross-site Scripting (aka XSS)
 
-Cross-site scripting (or shortly called XSS) is a method of injecting javascript code to a web application without permission. The most dangerous thing about this is that XSS grants an attacker control over what other people see on the webpage or steal cookie information about a user who is unlucky enough to execute the attackers javascript code when an infected page loads. If an attacker has your session cookie, there is a pretty high chance he can use it to "log in" to your account and do damage (for example sending malicous links through your social media account to other people that trust you). 
+Cross-site scripting (or shortly called XSS) is a method of **injecting javascript code** to a web application **without permission**. The most dangerous thing about this is that XSS grants an attacker control over what other people **see** on the webpage and/or steal cookie information from a user that allows him to **"log in"** to his account, he can then for example send malicous links through your social media account to other people that trust the user (family, close friends). 
 
-Nowadays, session cookie theft is harder to pull off, mainly because the HttpOnly header exists and alot of frontend frameworks try to prevent XSS in general (not always works). But still, since the attacker has full control over the content of the page (and your browser), he might as well turn it into a login screen that looks similar to the real one on the page. Many people would just think that it's just some kind of hiccup of the site and log in again, giving sensitive information to the attacker.
+Luckily nowadays, session cookie theft is a bit harder to pull off, mainly because more and more developers take advantage of the [HttpOnly]() header and alot of frontend frameworks try to prevent XSS in general. But still, since the attacker has full control over the content of the page (and your browser), he might as well turn it into a login screen that looks **excactly** to the real one on the website. Many people would just think that it's just some kind of hiccup from the site and they attempt to log in again, giving sensitive information to the attacker by sending that information to the attackers server.
 
 There are three main types of XSS:
 
 ## Reflected XSS
 
-### How does it work?
+This type of XSS takes advantage of poor server-side sanitization of [query string](https://en.wikipedia.org/wiki/Query_string) input. An example would be:
 
-This type of XSS takes advantage of poor server-side sanitization of GET queries. It works like this:
-```
-    1.  We have a URL: https://example.com?keyword=123
+1. The user sends the following GET request:
+    - `https://example.com?keyword=123`
+    - The `?keyword=123` is the query string.
+2. The user recieves the following content from the server:
+    ```html
+        <p>Sorry, there is no keyword called 123.</p>
+    ```
+3. It looks like the server sent the query string input back to the user, meaning there can be a possibility of reflected XSS.
+4. The user sends another GET request that looks like the following:
+    - `https://example.com?keyword=<h1>123</h1>`
+    - The user added a HTML header tag (h1) to the query string.
+5. The user recieves the following content from the server:
+    ```html
+        <p>Sorry, there is no keyword called <h1>123</h1></p>
+    ```
+    - The content is rendered correctly, changing the size of `123`.
+6. The user now tests if he is able to invoke XSS using the `<script>` tag or any tag or HTML attribute that allows javascript execution.
+    - `https://example.com?keyword=<script>alert('XSS')</script>`
 
-            That returns a page with text saying:
-            "Sorry, no item named 123 exists in our database."
+7. The server sends back the following content to the user:
+    ```html
+        <p>Sorry, there is not keyword called <script>alert('XSS')</script></p>
+    ```
+8. The user is greeted with an alert box saying '`XSS`' when the user recieves the content to the browser.
+9. The user now knows that the webpage is vulnerable to reflected XSS.
 
-    2.  To check if the site sanitizes the input on the server-side, you can craft the following example URL:
-
-        https://example.com?keyword=<script>alert('XSS')</script>
-
-            If the site is vulnerable to reflected XSS, the site returns an alert popup displaying the text "XSS" and the script tag visible in the initial server response.
-```
-
-This way the attacker can execute javascript in the victims browser, he could also mask the javascript code by encoding the characters in a way that doesnt look very suspicious. For example:
+This way the attacker can execute javascript in the victims browser, he could also mask the javascript code by encoding the characters in a way that doesnt look very suspicious. For example with [URL encoding](https://en.wikipedia.org/wiki/Percent-encoding):
 
 `https://example.com?keyword=<script>alert('XSS')</script>` 
 
@@ -45,25 +57,40 @@ Always sanitize and validate user input. The easiest way to do that is to use a 
 
 ## DOM-Based XSS
 
-This attack is pretty similar to Reflected XSS, but it depends on the javascript that is already on the site. The way it differs from a reflected XSS attack is that the input is processed on the client-side only. The malicious code isn't sent from the server. For example:
+This attack is pretty similar to Reflected XSS, but the problem is not on the server-side, but on **client-side code**, on the javascript code that is already on the site. The way it differs from a reflected XSS attack is that the input is processed by client-side code that manipulates the DOM. For example:
 
-```
-    Let's say that we have the following URL:
-        https://dynamic-page.com/?s=xyz
+1. User sends following request:
+    - `https://example.com#lang=en`
+2. User recieves following content:
+    ```html
+        <h1 id="greeting">Welcome!</h1>
+        <p id="lang">Language is set to: English</p>
+        <script>
+            const lang = location.hash.match(/=(.*)$/)[1] // Content after the = in #lang=en
+            const langP = document.querySelector("#lang") // The <p> tag
+            const greetingH1 = document.querySelector("#greeting") // The <h1> tag
 
-    The page loads and javascript sends an AJAX request and after some time results in the following:
-        -----------------------------------------
-        |Search: xyz                            |
-        -----------------------------------------
-        
-        Nothing called xyz.
-        
-        ...
+            switch(lang) {
+                case "en":
+                    greetingH1.innerHTML    = "Welcome!" 
+                    langP.innerHTML         = "Language is set to: English"
+                    break;
+                case "pl":
+                    greetingH1.innerHTML    = "Witajcie!"
+                    langP.innerHTML         = "Język ustawiony na: Polski"
+                    break;
+                case "it":
+                    greetingH1.innerHTML    = "Benvenuto!"
+                    langP.innerHTML         = "La lingua è impostata su: italiano"
+                    break;
+                default:
+                    langP.innerHTML         = `No language called ${lang}`
 
-    Upon typing into the searchbar, items appear or disappear accordingly to what was typed (because of AJAX).
-
-    If the attacker gave a simple img tag with an alert function on error to the input, the alert box opens.
-```
+            }
+        </script>
+    ```
+3. After inspecting the script tag content, the user sent the following request:
+    - `https://example.com#lang=<img src=/ onerror="alert('DOM XSS')">`
 
 DOM-based XSS attack vectors can also be **undetectable** if fragments are used on the site (#), because fragments never get sent to the server, whereas query strings are. This kind of attack is more and more common as web applications become more advanced. Bare in mind that even if a website has a completely secure backend, that does not mean that the frontend will handle user input safely.
 
@@ -71,7 +98,7 @@ DOM-based XSS attack vectors can also be **undetectable** if fragments are used 
 
 OWASP has an extension guide for DOM-Based XSS [here.](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)
 
-## Persistent XSS
+## Persistent / Stored XSS
 
 This is one of the more dangerous XSS attacks out there, since the malicious javascript is returned by the server itself. The way this is dangerous is that nobody really knows if the next page they load on the browser will be malicious or not, because the malicious code is not visible within the URL. This type of attack focuses on sending javascript code to a server, that later saves it in it's database and outputs it for everyone that views the page with that output from the database. A simple example would be:
 
